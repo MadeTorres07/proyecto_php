@@ -1,0 +1,23 @@
+# Ignorar archivos de XAMPP/entorno local
+.htaccess
+*.log
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos de IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignorar archivos temporales
+*.tmp
+~$*
+
+# NO ignorar tus archivos importantes:
+# !index.php
+# !config/
+# !sql/
+# !css/
