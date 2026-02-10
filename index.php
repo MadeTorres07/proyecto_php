@@ -21,6 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['guardar'])) {
         $nombre = trim($_POST['nombre']);
         $apellido = trim($_POST['apellido']);
+        // CONVERTIR a formato correcto
+        $nombre = ucfirst(strtolower($nombre));
+        $apellido = ucwords(strtolower($apellido));
         $edad = trim($_POST['edad']);
         $email = trim($_POST['email']);
         $ciudad = trim($_POST['ciudad']);
@@ -30,10 +33,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($nombre) || empty($apellido) || empty($email) || empty($edad) || empty($ciudad) || empty($tipo_usuario)) {
             $mensaje = "Todos los campos son obligatorios";
             $tipo_mensaje = "danger";
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } 
+        elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/', $nombre)) {
+            $mensaje = "El nombre debe ser un solo nombre (sin espacios)";
+            $tipo_mensaje = "danger";
+            
+        // 3. Validar apellido (CON espacios permitidos)
+        }
+        elseif (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $apellido)) {
+            $mensaje = "El apellido solo puede contener letras y espacios";
+            $tipo_mensaje = "danger";
+        }
+        elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $mensaje = "El email no es válido";
             $tipo_mensaje = "danger";
-        } elseif (!is_numeric($edad) || $edad < 1 || $edad > 120) {
+        } 
+        elseif (!preg_match('/@(gmail\.com|hotmail\.com|outlook\.com|yahoo\.es|yahoo\.com|icloud\.com|live\.com)$/i', $email)) {
+            $mensaje = "Dominio no permitido. Use: Gmail, Hotmail, Outlook, Yahoo o iCloud";
+            $tipo_mensaje = "danger";
+        }
+        elseif (!is_numeric($edad) || $edad < 1 || $edad > 120) {
             $mensaje = "La edad debe ser entre 1 y 120 años";
             $tipo_mensaje = "danger";
         } else {
@@ -52,28 +71,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 try {
                     // Si hay un ID, es actualización
                     if (!empty($_POST['id'])) {
-                        $id = $_POST['id'];
-                        $sql = "UPDATE usuarios SET nombre = ?, apellido = ?, edad = ?, 
-                                email = ?, ciudad = ?, tipo_usuario = ? WHERE id = ?";
-                        $stmt = $db->prepare($sql);
-                        $stmt->execute([$nombre, $apellido, $edad, $email, $ciudad, $tipo_usuario, $id]);
-                        
-                        $mensaje = "Usuario actualizado correctamente";
-                        $tipo_mensaje = "success";
-                    } else {
-                        // Es creación
-                        $sql = "INSERT INTO usuarios (nombre, apellido, edad, email, ciudad, tipo_usuario) 
-                                VALUES (?, ?, ?, ?, ?, ?)";
-                        $stmt = $db->prepare($sql);
-                        $stmt->execute([$nombre, $apellido, $edad, $email, $ciudad, $tipo_usuario]);
-                        
-                        $mensaje = "Usuario creado correctamente";
-                        $tipo_mensaje = "success";
-                        
-                        // Limpiar formulario después de crear
-                        $nombre = $apellido = $edad = $email = $ciudad = "";
-                        $tipo_usuario = "Estudiante";
-                    }
+                    $id = $_POST['id'];
+                    $sql = "UPDATE usuarios SET nombre = ?, apellido = ?, edad = ?, 
+                            email = ?, ciudad = ?, tipo_usuario = ? WHERE id = ?";
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute([$nombre, $apellido, $edad, $email, $ciudad, $tipo_usuario, $id]);
+
+                    $mensaje = "Usuario actualizado correctamente";
+                    $tipo_mensaje = "success";
+
+                    // Redirigir después de actualizar
+                    echo '<script>window.location.href = "index.php?editar=' . $id . '";</script>';
+                    exit();
+
+                } else {
+                    // Es creación
+                    $sql = "INSERT INTO usuarios (nombre, apellido, edad, email, ciudad, tipo_usuario) 
+                            VALUES (?, ?, ?, ?, ?, ?)";
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute([$nombre, $apellido, $edad, $email, $ciudad, $tipo_usuario]);
+
+                    $mensaje = "Usuario creado correctamente";
+                    $tipo_mensaje = "success";
+
+                    // ⭐⭐ REDIRIGIR para evitar reenvío al refrescar ⭐⭐
+                    echo '<script>window.location.href = "index.php";</script>';
+                    exit();
+                }
                 } catch(PDOException $e) {
                     if ($e->getCode() == 23000) { // Error de duplicado
                         $mensaje = "El email ya está registrado";
@@ -158,7 +182,7 @@ if (isset($_GET['editar'])) {
                                 <div class="col-md-6 mb-3">
                                     <label for="edad" class="form-label">Edad *</label>
                                     <input type="number" name="edad" class="form-control" 
-                                           value="<?php echo $edad; ?>" min="1" max="120" required>
+                                           value="<?php echo $edad; ?>" min="1" max="100" required>
                                     <div class="form-text" id="edad-feedback"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -246,8 +270,8 @@ if (isset($_GET['editar'])) {
                 } else if (tipo === 'Profesor' && edad < 18) {
                     mensaje = '⚠️ Un profesor debe tener al menos 18 años';
                     esValido = false;
-                } else if (edad < 1 || edad > 120) {
-                    mensaje = '⚠️ La edad debe estar entre 1 y 120 años';
+                } else if (edad < 1 || edad > 100) {
+                    mensaje = '⚠️ La edad debe estar entre 1 y 100 años';
                     esValido = false;
                 } else {
                     mensaje = '✅ Edad válida para ' + tipo.toLowerCase();
