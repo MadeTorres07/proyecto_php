@@ -1,23 +1,53 @@
-# Ignorar archivos de XAMPP/entorno local
-.htaccess
-*.log
+# ===================================
+# .GITIGNORE - Proyecto PHP CRUD
+# ===================================
 
-# Ignorar archivos de sistema
-.DS_Store
-Thumbs.db
+# Configuración local
+config/database.php
+.env
+.env.local
 
-# Ignorar archivos de IDE/editor
+# IDEs
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
 *.swp
 *.swo
+*~
 
-# Ignorar archivos temporales
-*.tmp
-~$*
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# NO ignorar tus archivos importantes:
-# !index.php
-# !config/
-# !sql/
-# !css/
+# PHP
+vendor/
+*.phar
+composer.lock
+
+# Node (si se usa)
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Base de datos
+*.sql
+!sql/database.sql
+
+# Logs
+*.log
+logs/
+
+# Temporal
+tmp/
+temp/
+cache/
+
+# Editor backups
+*.bak
+*.orig
+*.backup
+
+# Sistema
+.htaccess

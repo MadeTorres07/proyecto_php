@@ -21,17 +21,36 @@ Sistema web completo para la gestión de usuarios con operaciones CRUD (Create, 
 
 ## 📁 Estructura del Proyecto
 ```bash
-proyecto_php/
-├── index.php # Página principal - Agregar/Editar usuarios
-├── listar.php # Página secundaria - Listar usuarios
-├── config/
-│ └── database.php # Configuración de conexión a base de datos
-├── css/
-│ └── style.css # Estilos personalizados
-├── sql/
-│ └── database.sql # Script SQL para creación de estructura
-└── README.md # Esta documentación
+Proyecto_php/
+│
+├── 📂 app/
+│   ├── 📂 controllers/
+│   │   └── UsuarioController.php    # Lógica de operaciones CRUD
+│   ├── 📂 models/
+│   │   └── Usuario.php              # Modelo de base de datos
+│   └── 📂 views/
+│       ├── index.php                # Formulario (agregar/editar)
+│       └── listar.php               # Listado de usuarios
+│
+├── 📂 config/
+│   └── database.php                 # Configuración de conexión
+│
+├── 📂 public/
+│   ├── 📂 css/
+│   │   └── style.css                # Estilos personalizados
+│   └── index.php                    # Punto de entrada principal
+│
+├── 📂 sql/
+│   └── database.sql                 # Script SQL
+│
+├── .gitignore                       # Archivos a ignorar en Git
+└── README.md                        # Esta documentación
 ```
+
+### 🏗️ Arquitectura MVC
+- **Models**: Capa de datos (`Usuario.php`)
+- **Controllers**: Lógica de negocio (`UsuarioController.php`)
+- **Views**: Interfaz de usuario (`index.php`, `listar.php`)
 ## ⚙️ Instalación y Configuración
 
 ### Requisitos Previos
