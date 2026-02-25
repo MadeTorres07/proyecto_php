@@ -36,8 +36,6 @@ Proyecto_php/
 │   └── database.php                 # Configuración de conexión
 │
 ├── 📂 public/
-│   ├── 📂 css/
-│   │   └── style.css                # Estilos personalizados
 │   └── index.php                    # Punto de entrada principal
 │
 ├── 📂 sql/
@@ -58,3 +56,11 @@ Proyecto_php/
 - PHP 7.4 o superior
 - MySQL 5.7 o superior
 - Navegador web moderno
+
+## 🔗 Acceso a la aplicación
+
+- **Formulario de registro:**  
+  `http://localhost/Proyecto_php/public/index.php?vista=index`
+
+- **Lista de usuarios:**  
+  `http://localhost/Proyecto_php/public/index.php?vista=listar`
